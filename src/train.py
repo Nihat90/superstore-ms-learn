@@ -86,7 +86,10 @@ def main():
     # -------------------------
     print(f"Lade Daten aus: {args.data}")
 
-    df = pd.read_csv(args.data)
+    df = pd.read_csv(
+        args.data,
+        encoding = "latin-1"
+    )
 
     print(f"Datensatz: {df.shape[0]} Zeilen, {df.shape[1]} Spalten")
 
