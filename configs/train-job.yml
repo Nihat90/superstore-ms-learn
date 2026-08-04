@@ -1,1 +1,24 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
 
+type: command
+
+code: ..
+
+command: >-
+  python src/train.py
+  --data data/Superstore.csv
+  --n_estimators 200
+  --min_samples_leaf 1
+  --model_output ${{outputs.model_output}}/model.joblib
+
+environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
+
+compute: azureml:<DEIN-COMPUTE-NAME>
+
+experiment_name: superstore-loss-classification
+
+display_name: superstore-random-forest
+
+outputs:
+  model_output:
+    type: uri_folder
