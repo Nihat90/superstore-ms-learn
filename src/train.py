@@ -86,10 +86,7 @@ def main():
     # -------------------------
     print(f"Lade Daten aus: {args.data}")
 
-    df = pd.read_csv(
-        args.data,
-        encoding = "latin-1"
-    )
+    df = pd.read_csv(args.data)
 
     print(f"Datensatz: {df.shape[0]} Zeilen, {df.shape[1]} Spalten")
 
@@ -111,7 +108,7 @@ def main():
         "Order Month",
         "Shipping Days",
     ]
-
+    
     X = df[features]
     y = df["Is Loss"]
 
