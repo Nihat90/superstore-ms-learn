@@ -53,3 +53,5 @@ def main():
     ).astype(int)
 
     # Nur die Features behalten, die unser Modell braucht
+if __name__ == "__main__":
+    main()
