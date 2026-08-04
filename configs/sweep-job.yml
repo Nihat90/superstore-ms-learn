@@ -1,1 +1,49 @@
+$schema: https://azuremlschemas.azureedge.net/latest/sweepJob.schema.json
 
+type: sweep
+
+sampling_algorithm: random
+
+search_space:
+  n_estimators:
+    type: choice
+    values: [100, 200, 300, 500]
+
+  max_depth:
+    type: choice
+    values: [5, 10, 20, 30]
+
+  min_samples_leaf:
+    type: choice
+    values: [1, 2, 4, 8]
+
+trial:
+  code: ..
+
+  command: >-
+    python src/train.py
+    --data data/Superstore.csv
+    --n_estimators ${{search_space.n_estimators}}
+    --max_depth ${{search_space.max_depth}}
+    --min_samples_leaf ${{search_space.min_samples_leaf}}
+    --model_output ${{outputs.model_output}}/model.joblib
+
+  environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
+
+  compute: azureml:<DEIN-COMPUTE-NAME>
+
+  outputs:
+    model_output:
+      type: uri_folder
+
+objective:
+  goal: maximize
+  primary_metric: f1
+
+limits:
+  max_total_trials: 12
+  max_concurrent_trials: 3
+
+experiment_name: superstore-rf-sweep
+
+display_name: superstore-random-forest-sweep
