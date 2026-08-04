@@ -1,1 +1,74 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
 
+type: pipeline
+
+display_name: superstore-training-pipeline
+experiment_name: superstore-pipeline
+
+settings:
+  default_compute: azureml:DEIN_COMPUTE_NAME
+
+jobs:
+
+  prepare:
+    type: command
+
+    code: ..
+
+    command: >-
+      python src/prepare.py
+      --data data/Superstore.csv
+      --output ${{outputs.prepared_data}}
+
+    environment: azureml:DEINE_FUNKTIONIERENDE_ENVIRONMENT
+
+    outputs:
+      prepared_data:
+        type: uri_folder
+
+
+  train:
+    type: command
+
+    code: ..
+
+    command: >-
+      python src/train.py
+      --data ${{inputs.training_data}}
+      --n_estimators 200
+      --max_depth 20
+      --min_samples_leaf 1
+      --model_output ${{outputs.model_output}}/model.joblib
+
+    environment: azureml:DEINE_FUNKTIONIERENDE_ENVIRONMENT
+
+    inputs:
+      training_data:
+        type: uri_folder
+        path: ${{parent.jobs.prepare.outputs.prepared_data}}
+
+    outputs:
+      model_output:
+        type: uri_folder
+
+
+  evaluate:
+    type: command
+
+    code: ..
+
+    command: >-
+      python src/evaluate.py
+      --model ${{inputs.model}}
+      --data ${{inputs.test_data}}
+
+    environment: azureml:DEINE_FUNKTIONIERENDE_ENVIRONMENT
+
+    inputs:
+      model:
+        type: uri_folder
+        path: ${{parent.jobs.train.outputs.model_output}}
+
+      test_data:
+        type: uri_folder
+        path: ${{parent.jobs.prepare.outputs.prepared_data}}
