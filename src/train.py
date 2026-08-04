@@ -93,7 +93,7 @@ def main():
     # -------------------------
     # 2. Feature Engineering
     # -------------------------
-    df = prepare_data(df)
+    #df = prepare_data(df)
 
     # -------------------------
     # 3. Features + Target
